@@ -3,7 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neat.Results", "Neat.Results\Neat.Results.csproj", "{6E55F026-BE58-4C26-A355-8F7966DF2ABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neat.Results.Tests", "Neat.Results.Tests\Neat.Results.Tests.csproj", "{5BB2748F-40D9-4904-A666-1AE964413E0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B1DB863-E698-427C-A9C4-14D25B0A0A44}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E55F026-BE58-4C26-A355-8F7966DF2ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E55F026-BE58-4C26-A355-8F7966DF2ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E55F026-BE58-4C26-A355-8F7966DF2ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E55F026-BE58-4C26-A355-8F7966DF2ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB2748F-40D9-4904-A666-1AE964413E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB2748F-40D9-4904-A666-1AE964413E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB2748F-40D9-4904-A666-1AE964413E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB2748F-40D9-4904-A666-1AE964413E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
