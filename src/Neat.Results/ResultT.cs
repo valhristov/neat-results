@@ -6,18 +6,35 @@ namespace Neat.Results
 {
     public class Result<T>
     {
+        /// <summary>
+        /// When result is Success, returns its value; otherwise throws InvalidOperationException.
+        /// </summary>
         public T ValueOrThrow() =>
             ValueOrThrow(() => new InvalidOperationException("Failure does not have a value"));
 
+        /// <summary>
+        /// When result is Success, returns its value; otherwise throws the provided exception.
+        /// </summary>
         public T ValueOrThrow<TException>(Func<TException> factory) where TException : Exception =>
             Value(value => value, _ => throw factory.Invoke());
 
+        /// <summary>
+        /// When result is Success, returns its value; otherwise returns the provided default value.
+        /// </summary>
         public T ValueOrDefault(T @default) =>
             Value(value => value, _ => @default);
 
+        /// <summary>
+        /// When the result is Failure, returns the errors; otherwise returns an empty array.
+        /// </summary>
+        /// <returns></returns>
         public ImmutableArray<string> ErrorsOrEmpty() =>
             Value(value => ImmutableArray<string>.Empty, errors => errors);
 
+        /// <summary>
+        /// Converts a result to value. When the result is Success, invokes the onSuccess function;
+        /// otherwise invokes the onFailure function.
+        /// </summary>
         public TOut Value<TOut>(Func<T, TOut> onSuccess, Func<ImmutableArray<string>, TOut> onFailure) =>
             this switch
             {
@@ -26,6 +43,10 @@ namespace Neat.Results
                 _ => throw new NotSupportedException(),
             };
 
+        /// <summary>
+        /// Converts a result to another result. When the result is Success, invokes the onSuccess function;
+        /// otherwise invokes the onFailure function.
+        /// </summary>
         public Result<TOut> Select<TOut>(Func<T, Result<TOut>> onSuccess, Func<ImmutableArray<string>, Result<TOut>> onFailure = null) =>
             this switch
             {
@@ -34,6 +55,10 @@ namespace Neat.Results
                 _ => throw new NotSupportedException(),
             };
 
+        /// <summary>
+        /// Performs a side effect action on a result. When the result is Success, invokes the onSuccess action;
+        /// otherwise invokes the onFailure action.
+        /// </summary>
         public void Match(Action<T> onSuccess, Action<ImmutableArray<string>> onFailure)
         {
             switch (this)
@@ -44,6 +69,10 @@ namespace Neat.Results
             }
         }
 
+        /// <summary>
+        /// Converts a result to another result asynchronously. When the result is Success, invokes the onSuccess
+        /// function; otherwise invokes the onFailure function.
+        /// </summary>
         public Task<Result<TOut>> SelectAsync<TOut>(Func<T, Task<Result<TOut>>> onSuccess, Func<ImmutableArray<string>, Task<Result<TOut>>> onFailure = null) =>
             this switch
             {
@@ -55,6 +84,10 @@ namespace Neat.Results
                 _ => throw new NotSupportedException(),
             };
 
+        /// <summary>
+        /// Performs a side effect action on a result asynchronously. When the result is Success, invokes the
+        /// onSuccess action; otherwise invokes the onFailure action.
+        /// </summary>
         public Task MatchAsync(Func<T, Task> onSuccess, Func<ImmutableArray<string>, Task> onFailure) =>
             this switch
             {
