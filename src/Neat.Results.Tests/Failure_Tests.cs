@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -74,6 +76,68 @@ namespace Neat.Results.Tests
             result.Match(
                 value => Assert.Fail("This should not be executed"),
                 errors => errors.Should().BeEquivalentTo("error"));
+        }
+
+        [TestMethod]
+        public async Task Convert_Failure_To_Success_Async()
+        {
+            // Arrange
+            var result = Result.Failure<int>("error");
+
+            // Act
+            var val = await result.SelectAsync(
+                value => throw new Exception("This should not be executed"),
+                OnErrorAsync);
+
+            // Assert
+            val.ValueOrThrow().Should().Be("5");
+            val.ErrorsOrEmpty().Should().BeEmpty();
+
+            async Task<Result<string>> OnErrorAsync(ImmutableArray<string> errors)
+            {
+                await Task.Delay(1);
+                return Result.Success("5");
+            }
+        }
+
+        [TestMethod]
+        public async Task Convert_Failure_To_Another_Failure_Async()
+        {
+            // Arrange
+            var result = Result.Failure<int>("error");
+
+            // Act
+            var val = await result.SelectAsync(
+                value => throw new Exception("This should not be executed"),
+                OnErrorAsync);
+
+            // Assert
+            val.ValueOrDefault(null).Should().Be(null);
+            val.ErrorsOrEmpty().Should().BeEquivalentTo("error", "another error");
+
+            async Task<Result<string>> OnErrorAsync(ImmutableArray<string> errors)
+            {
+                await Task.Delay(1);
+                return Result.Failure<string>(errors.Add("another error"));
+            }
+        }
+
+        [TestMethod]
+        public async Task Match_Value_Async()
+        {
+            var result = Result.Failure<int>("error");
+
+            var sideEffect = false;
+
+            await result.MatchAsync(
+                value => throw new Exception("This should not be executed"),
+                async errors =>
+                {
+                    await Task.Delay(1); // simultate some work
+                    sideEffect = true;
+                });
+
+            sideEffect.Should().BeTrue();
         }
     }
 }

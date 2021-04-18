@@ -44,6 +44,25 @@ namespace Neat.Results
             }
         }
 
+        public Task<Result<TOut>> SelectAsync<TOut>(Func<T, Task<Result<TOut>>> onSuccess, Func<ImmutableArray<string>, Task<Result<TOut>>> onFailure = null) =>
+            this switch
+            {
+                Success success => onSuccess(success.Value),
+                Failure failure =>
+                    onFailure != null
+                        ? onFailure(failure.Errors)
+                        : Task.FromResult(Result.Failure<TOut>(failure.Errors)),
+                _ => throw new NotSupportedException(),
+            };
+
+        public Task MatchAsync(Func<T, Task> onSuccess, Func<ImmutableArray<string>, Task> onFailure) =>
+            this switch
+            {
+                Success success => onSuccess(success.Value),
+                Failure failure => onFailure(failure.Errors),
+                _ => throw new NotSupportedException(),
+            };
+
         private Result() { }
 
         internal sealed class Success : Result<T>
