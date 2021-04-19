@@ -56,6 +56,18 @@ namespace Neat.Results
             };
 
         /// <summary>
+        /// Converts a result to value asynchronously. When the result is Success, invokes the onSuccess function;
+        /// otherwise invokes the onFailure function.
+        /// </summary>
+        public Task<TOut> ValueAsync<TOut>(Func<T, Task<TOut>> onSuccess, Func<ImmutableArray<string>, Task<TOut>> onFailure) =>
+            this switch
+            {
+                Success success => onSuccess(success.Value),
+                Failure failure => onFailure(failure.Errors),
+                _ => throw new NotSupportedException(),
+            };
+
+        /// <summary>
         /// Performs a side effect action on a result. When the result is Success, invokes the onSuccess action;
         /// otherwise invokes the onFailure action.
         /// </summary>

@@ -139,5 +139,21 @@ namespace Neat.Results.Tests
 
             sideEffect.Should().BeTrue();
         }
+
+        [TestMethod]
+        public async Task Convert_Value_Async()
+        {
+            var result = Result.Failure<int>("error");
+
+            var value = await result.ValueAsync(
+                value => throw new Exception("This should not be executed"),
+                async errors =>
+                {
+                    await Task.Delay(1); // simultate some work
+                    return "something";
+                });
+
+            value.Should().Be("something");
+        }
     }
 }
